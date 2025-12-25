@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Introduction | Av_eSAFE Gurukul</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body>
+    <header></header>
+    <div class="tutorial-container">
+        <aside class="sidebar"></aside>
+        <main class="content reveal">
+            <h1>SQL Introduction</h1>
+            <p>SQL is a standard language for storing, manipulating and retrieving data in databases.</p>
+
+            <h2>What is SQL?</h2>
+            <ul>
+                <li>SQL stands for Structured Query Language</li>
+                <li>SQL lets you access and manipulate databases</li>
+                <li>SQL became a standard of the American National Standards Institute (ANSI) in 1986</li>
+            </ul>
+
+            <h2>SQL Syntax</h2>
+            <pre><code>SELECT * FROM Customers;</code><button class="copy-btn">Copy</button></pre>
+
+            <h2>Example Query</h2>
+            <div class="editor-container">
+                <div class="editor-header">
+                    <span>SQL Editor</span>
+                    <button class="run-btn" onclick="runCode()">Run ▶</button>
+                </div>
+                <div class="editor-body" style="height: auto;">
+                    <textarea id="code-html" class="code-input" spellcheck="false" style="height: 150px;">
+SELECT CustomerName, City FROM Customers;</textarea>
+                    <iframe id="preview-frame" class="preview-frame"></iframe>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="../../assets/js/main.js"></script>
+    <script src="../../assets/js/editor.js"></script>
+</body>
+</html>

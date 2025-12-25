@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Certificate | Av_eSAFE Gurukul</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --cert-bg-color: #ffffff;
+            --cert-pattern-color: #f9fafb;
+            /* Fallback variables for PDF generation */
+            --primary: #6366f1;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --glass-border: rgba(0, 0, 0, 0.1);
+        }
+        body.dark-mode {
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+        .cert-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+            padding: 2rem;
+            flex-direction: column;
+        }
+        .certificate {
+            /* Force Light Mode Variables for Certificate */
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --glass-border: rgba(0, 0, 0, 0.1);
+
+            background: #ffffff;
+            color: var(--text-main);
+            width: 1100px; /* More landscape width */
+            min-height: 780px; /* More landscape height */
+            padding: 3rem 5rem;
+            text-align: center;
+            border: 1px solid var(--glass-border);
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            display: none; /* Hidden by default */
+            /* Subtle background pattern */
+            background-color: var(--cert-bg-color);
+            background-image:
+                linear-gradient(45deg, var(--cert-pattern-color) 25%, transparent 25%),
+                linear-gradient(-45deg, var(--cert-pattern-color) 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, var(--cert-pattern-color) 75%),
+                linear-gradient(-45deg, transparent 75%, var(--cert-pattern-color) 75%);
+            background-size: 20px 20px;
+            overflow: hidden;
+        }
+        .certificate.visible { display: block; animation: certReveal 0.6s ease-out forwards; }
+        
+        .cert-logo-text {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 2rem;
+            color: var(--text-muted);
+        }
+        .cert-logo-text span {
+            font-weight: 900;
+            color: var(--primary);
+        }
+        .cert-header {
+            font-family: var(--font-main);
+            font-size: 2.5rem;
+            font-weight: 300;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 10px;
+            margin-bottom: 1rem;
+        }
+        .cert-sub { 
+            font-size: 1.2rem; 
+            color: var(--text-muted); 
+            margin-bottom: 1.5rem; 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+        }
+        .cert-name { 
+            font-size: 4.5rem; 
+            font-family: 'Alex Brush', cursive; 
+            font-weight: normal; 
+            color: var(--text-main); 
+            margin: 2rem 0; 
+            border-bottom: 2px solid var(--glass-border); 
+            display: inline-block; 
+            padding: 0 2rem 1rem;
+            text-transform: capitalize;
+        }
+        .cert-body { font-size: 1.5rem; line-height: 1.6; margin-bottom: 3rem; }
+        .cert-footer { display: flex; justify-content: space-between; margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--glass-border); }
+        .cert-sig { text-align: center; }
+        .cert-sig img { height: 60px; margin-bottom: 10px; display: block; margin: 0 auto 10px; }
+        .cert-sig p { font-weight: bold; padding-top: 0; width: 200px; margin: 0 auto; }
+        
+        .locked-message {
+            text-align: center;
+            background: var(--glass-bg);
+            padding: 3rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--glass-border);
+            max-width: 600px;
+        }
+        @keyframes certReveal {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes textFadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .cert-content > * {
+            opacity: 0;
+            animation: textFadeIn 0.6s ease-out forwards;
+        }
+        .cert-content > *:nth-child(1) { animation-delay: 0.4s; }
+        .cert-content > *:nth-child(2) { animation-delay: 0.6s; }
+        .cert-content > *:nth-child(3) { animation-delay: 0.8s; }
+        .cert-content > *:nth-child(4) { animation-delay: 1.0s; }
+        .cert-content > *:nth-child(5) { animation-delay: 1.2s; }
+
+        .corner {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-color: var(--primary);
+            border-style: solid;
+            opacity: 0.8;
+        }
+        .corner.top-left { top: 20px; left: 20px; border-width: 4px 0 0 4px; }
+        .corner.top-right { top: 20px; right: 20px; border-width: 4px 4px 0 0; }
+        .corner.bottom-left { bottom: 20px; left: 20px; border-width: 0 0 4px 4px; }
+        .corner.bottom-right { bottom: 20px; right: 20px; border-width: 0 4px 4px 0; }
+        
+        @media print {
+            body * { visibility: hidden; }
+            .certificate, .certificate * { visibility: visible; }
+            .certificate { position: absolute; left: 0; top: 0; width: 100%; border: 5px solid #000; box-shadow: none; background: #fff; color: #000; }
+        }
+    </style>
+    <!-- Google Font for Signature/Name style -->
+    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header></header>
+    
+    <div class="cert-wrapper">
+        <div id="lockedMessage" class="locked-message">
+            <h1>Certificate Locked 🔒</h1>
+            <p>You have not completed all quizzes for this module yet.</p>
+            <p>Please complete the course to earn your certificate.</p>
+            <a href="index.html" class="btn-small" style="background: var(--primary); margin-top: 1rem;">Back to Courses</a>
+        </div>
+
+        <div id="nameInputSection" class="locked-message" style="display:none;">
+            <h1>🎉 Course Completed!</h1>
+            <p>Congratulations! Please enter your full name to generate your certificate.</p>
+            <input type="text" id="studentNameInput" placeholder="Enter your full name" style="padding: 10px; font-size: 1rem; border-radius: 5px; border: 1px solid var(--glass-border); background-color: var(--input-bg); color: var(--text-main); width: 80%; margin: 1rem 0; display: block; margin-left: auto; margin-right: auto;">
+            <button onclick="generateCertificate()" class="btn-small" style="background: var(--primary); border: none; cursor: pointer;">Generate Certificate</button>
+        </div>
+
+        <div id="downloadSection" style="display:none; margin-bottom: 2rem;">
+            <button onclick="downloadCertificate()" class="btn-small" style="background: var(--accent); border: none; cursor: pointer; font-size: 1.1rem; padding: 0.8rem 1.5rem;">Download Certificate (PNG) 📥</button>
+        </div>
+
+        <div id="certificate" class="certificate">
+            <div class="corner top-left"></div>
+            <div class="corner top-right"></div>
+            <div class="corner bottom-left"></div>
+            <div class="corner bottom-right"></div>
+            <div class="cert-content">
+                <div class="cert-logo-text">Av_eSAFE <span>Gurukul</span></div>
+                <div class="cert-header">Certificate of Completion</div>
+                <div class="cert-sub">This is to certify that</div>
+                <div class="cert-name">Student Name</div>
+                <div class="cert-body">
+                    has successfully completed the <strong id="courseName">Course Name</strong> module<br>
+                    at Av_eSAFE Gurukul.
+                </div>
+                <div class="cert-footer">
+                    <div class="cert-sig">
+                        <p>Date</p>
+                        <span id="certDate"></span>
+                    </div>
+                    <div class="cert-sig">
+                        <p>Abhinav Utkarsh</p>
+                        <span>Founder, Av_eSAFE</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const course = params.get('course');
+            const isAdmin = params.get('admin') === 'true';
+            
+            const isCompleted = localStorage.getItem(`badge_${course}`) === 'true';
+
+            if (isAdmin || isCompleted) {
+                document.getElementById('lockedMessage').style.display = 'none';
+                document.getElementById('nameInputSection').style.display = 'block';
+                
+                const userSession = JSON.parse(localStorage.getItem('user_session'));
+                if (userSession && userSession.name) {
+                    document.getElementById('studentNameInput').value = userSession.name;
+                }
+                
+                document.getElementById('courseName').textContent = (course || 'Web Development').toUpperCase();
+                document.getElementById('certDate').textContent = new Date().toLocaleDateString();
+            } else if (window.curriculum && window.curriculum[course]) {
+                // --- Progress Calculation for Locked State ---
+                const curriculum = window.curriculum[course];
+                const completedTopics = JSON.parse(localStorage.getItem(window.getUserKey('completedTopics'))) || [];
+                let total = 0;
+                let completedCount = 0;
+                const pending = [];
+
+                curriculum.forEach(section => {
+                    section.items.forEach(item => {
+                        total++;
+                        // Check if item.url is in completedTopics
+                        if (completedTopics.includes(item.url)) {
+                            completedCount++;
+                        } else {
+                            pending.push(item.name);
+                        }
+                    });
+                });
+
+                const percent = total === 0 ? 0 : Math.round((completedCount / total) * 100);
+                
+                const lockedMsg = document.getElementById('lockedMessage');
+                lockedMsg.innerHTML = `
+                    <h1>Certificate Locked 🔒</h1>
+                    <p>You have completed <strong>${percent}%</strong> of the course.</p>
+                    <div style="width: 100%; background: var(--glass-border); height: 10px; border-radius: 5px; margin: 1rem 0; overflow: hidden;">
+                        <div style="width: ${percent}%; background: var(--primary); height: 100%; transition: width 0.5s ease;"></div>
+                    </div>
+                    <p style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Pending Modules:</p>
+                    <div style="text-align: left; max-height: 150px; overflow-y: auto; background: var(--input-bg); padding: 10px; border-radius: 5px; font-size: 0.85rem; border: 1px solid var(--glass-border);">
+                        ${pending.map(p => `<div style="padding: 4px 0; border-bottom: 1px solid var(--glass-border); color: var(--text-muted);">• ${p}</div>`).join('')}
+                    </div>
+                    <a href="index.html" class="btn-small" style="background: var(--primary); margin-top: 1rem; display: inline-block;">Back to Courses</a>
+                `;
+            }
+        });
+
+        function generateCertificate() {
+            const nameInput = document.getElementById('studentNameInput');
+            const name = nameInput.value;
+            if (!name.trim()) {
+                alert("Please enter your name.");
+                return;
+            }
+            
+            document.querySelector('.cert-name').textContent = name;
+            document.getElementById('nameInputSection').style.display = 'none';
+            document.getElementById('certificate').classList.add('visible');
+            document.getElementById('downloadSection').style.display = 'block';
+        }
+
+        function downloadCertificate() {
+            const element = document.getElementById('certificate');
+            
+            // Store original styles to restore later
+            const originalAnimation = element.style.animation;
+            const originalTransform = element.style.transform;
+            const originalOpacity = element.style.opacity;
+
+            // Handle children animations (prevent opacity: 0 issues during capture)
+            const animatedChildren = element.querySelectorAll('.cert-content > *');
+            const childrenStyles = [];
+            animatedChildren.forEach(child => {
+                childrenStyles.push({ el: child, anim: child.style.animation, op: child.style.opacity });
+                child.style.animation = 'none';
+                child.style.opacity = '1';
+            });
+            
+            // Remove animation and transform to ensure clean capture
+            element.style.animation = 'none';
+            element.style.transform = 'none';
+            element.style.opacity = '1';
+
+            html2canvas(element, {
+                scale: 2, // High resolution
+                useCORS: true,
+                backgroundColor: '#ffffff'
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'Av_eSAFE_Certificate.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+
+                // Restore original styles
+                element.style.animation = originalAnimation;
+                element.style.transform = originalTransform;
+                element.style.opacity = originalOpacity;
+
+                childrenStyles.forEach(item => {
+                    item.el.style.animation = item.anim;
+                    item.el.style.opacity = item.op;
+                });
+            });
+        }
+    </script>
+</body>
+</html>
