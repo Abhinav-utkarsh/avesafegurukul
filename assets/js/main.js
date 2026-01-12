@@ -1582,10 +1582,28 @@ function injectDynamicStyles() {
         }
 
         /* UI Elements Visibility Fixes */
-        .card, .info-box, .quiz-container, .cert-container, .custom-modal {
+        .card, .info-box, .quiz-container, .cert-container, .custom-modal, .roadmap-step, .timeline-content {
             background: var(--card-bg);
             border-color: var(--glass-border);
             color: var(--text-main);
+        }
+
+        /* Buttons & Links Visibility */
+        .btn-small, .btn, .run-btn, .copy-btn {
+            background-color: var(--primary);
+            color: #ffffff !important;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        
+        .btn-small:hover, .btn:hover, .run-btn:hover, .copy-btn:hover {
+            background-color: var(--accent);
+            color: #ffffff !important;
+        }
+
+        .content a:not(.btn-small):not(.btn):not(.brand) {
+            color: var(--primary);
         }
 
         /* Nav Buttons (Previous/Next) */
